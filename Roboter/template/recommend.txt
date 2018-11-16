@@ -1,0 +1,2 @@
+My recommendation restraunt is $recommend_restraunt.
+Do you like this restraunt? [y/n]
