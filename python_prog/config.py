@@ -6,9 +6,10 @@ from nltk.translate import bleu_score
 import numpy
 import progressbar
 import six
-
+import sys
 import chainer
 from chainer import cuda
+from chainer import serializers
 import chainer.functions as F
 import chainer.links as L
 from chainer import training
@@ -49,7 +50,7 @@ def sequence_embed(embed, xs):
 
 class Seq2seq(chainer.Chain):
 
-    def __init__(self, n_layers, n_source_vocab, n_target_vocab, n_units):
+    def __init__(self, n_layers, n_source_vocab, n_target_vocab, n_units, batch_size):
         super(Seq2seq, self).__init__()
         with self.init_scope():
             self.embed_x = L.EmbedID(n_source_vocab, n_units)
@@ -57,18 +58,18 @@ class Seq2seq(chainer.Chain):
             self.encoder = L.NStepLSTM(n_layers, n_units, n_units, 0.1)
             self.decoder = L.NStepLSTM(n_layers, n_units, n_units, 0.1)
             # add
-            self.connecter = L.NStepLSTM(n_layers, n_units, n_units, 0.1)
+            self.connecter = L.Linear(None, n_units * batch_size)  ##############
+            self.cnt = 0
             # end
             self.W = L.Linear(n_units, n_target_vocab)
-
 
         self.n_layers = n_layers
         self.n_units = n_units
         # add
-        self.prev_hx = None
-        self.prev_cx = None
-        self.prev_h = None
-        self.prev_c = None
+        self.prev_hx = chainer.Variable(
+            cuda.cupy.array(numpy.zeros((self.n_layers, 1, self.n_units)), dtype=numpy.float32))
+        self.prev_h = chainer.Variable(
+            cuda.cupy.array(numpy.zeros((self.n_layers, 1, self.n_units)), dtype=numpy.float32))
         # end
 
     def __call__(self, xs, ys):
@@ -78,23 +79,47 @@ class Seq2seq(chainer.Chain):
         ys_in = [F.concat([eos, y], axis=0) for y in ys]  # [eos,y1,y2,...]
         ys_out = [F.concat([y, eos], axis=0) for y in ys]  # [y1,y2,...,eos]
 
-        # Both xs and ys_in are lists of arrays.
         exs = sequence_embed(self.embed_x, xs)
         eys = sequence_embed(self.embed_y, ys_in)
 
         batch = len(xs)
 
         hx, cx, _ = self.encoder(None, None, exs)
-        # add
-        if xs[0][-1] == 6:
-            hx, cx, _ = self.connecter(None, None, hx)
-        elif xs[0][-1] != 6 and self.prev_hx is not None:
-            hx, cx, _ = self.connecter(self.prev_hx, self.prev_cx, hx)
-            hx = F.reshape(hx, (self.n_layers, batch, self.n_units))
+        # add##################################################################################################################################
+        forward_hx = hx[:, :-1]
+        sifted_hx = F.concat([self.prev_hx, forward_hx], axis=1)
+        in_hx = F.concat((hx, sifted_hx), axis=2)
+        out_hx = self.connecter(in_hx)
+        out_hx = out_hx.reshape(self.n_layers, -1, self.n_units)
+        self.prev_hx = hx[:, -1:]
 
-        self.prev_hx = hx
-        self.prev_cx = cx
-        # end
+        '''
+        hx[0] = [[0,1,2],[3,4,5],[6,7,8]]                  shape = (layers, batch, units)
+        forward_hx[0] = [[0,1,2],[3,4,5]]                  shape = (layers, batch-1, units)
+        sifted_hx[0] = [self.prev_hx, [0,1,2],[3,4,5]]     shape = (layers, batch, units)
+        in_hx[0] = [hx[0],sifted_hx[0]]                    shape = (layers, batch, units*2)
+        out_hx[0] = connecter(in_hx)                       shape = (layers, batch, units)
+        '''
+
+        is_start_of_sentence = cuda.cupy.array(
+            [1 if word[-1] == 6 else 0 for word in xs])  # 6 means word number of * (start of sentece)
+        is_start_of_sentence = is_start_of_sentence.reshape(-1, 1)
+
+        new_hx = is_start_of_sentence * hx + (1 - is_start_of_sentence) * out_hx
+
+        '''
+        When
+        hx = [[[1,2,3],[4,5,6],[7,8,9]],[[11,12,13],[14,15,16],[17,18,19]],[21,22,23],[24,25,26],[27,28,29]] (shape = (layer=3, batch=3, unit=3))
+        out_hx = [[[10,20,30],[40,50,60],[70,80,90]],[[110,120,130],[140,150,160],[170,180,190]],[210,220,230],[240,250,260],[270,280,290]]
+        is_state_of_stence = [[1],[0],[1]] (shape=(batch=3, 1))
+
+        Then, 
+        new_hx = [[[1,2,3],[4,5,6],[7,8,9]],[[110,120,130],[140,150,160],[170,180,190]],[21,22,23],[24,25,26],[27,28,29]]
+        '''
+
+        hx = new_hx
+
+        # end############################################################################################################################
         _, _, os = self.decoder(hx, cx, eys)
 
         # It is faster to concatenate data before calculating loss
@@ -112,7 +137,6 @@ class Seq2seq(chainer.Chain):
 
     def translate(self, xs, max_length=50):
         batch = len(xs)
-
         with chainer.no_backprop_mode(), chainer.using_config('train', False):
             xs = [x[::-1] for x in xs]
 
@@ -120,13 +144,18 @@ class Seq2seq(chainer.Chain):
             h, c, _ = self.encoder(None, None, exs)
 
             # add
-            if xs[0][-1] == 6:
-                h, c, _ = self.connecter(None, None, h)
-            if xs[0][-1] != 6 and self.prev_h is not None:
-                h, c, _ = self.connecter(self.prev_h, self.prev_c, h)
-                h = F.reshape(h, (self.n_layers, batch, self.n_units))
-            self.prev_h = h
-            self.prev_c = c
+            forward_h = h[:, :-1]
+            sifted_h = F.concat((self.prev_h, forward_h), axis=1)
+            in_h = F.concat((h, sifted_h), axis=2)
+            out_h = self.connecter(in_h)
+            out_h = out_h.reshape(self.n_layers, -1, self.n_units)
+            self.prev_h = h[:, -1:]
+
+            is_start_of_sentence = cuda.cupy.array([1 if word[-1] == 6 else 0 for word in xs])
+            is_start_of_sentence = is_start_of_sentence.reshape(-1, 1)
+
+            new_h = is_start_of_sentence * h + (1 - is_start_of_sentence) * out_h
+            h = new_h
             # end
 
             ys = self.xp.full(batch, EOS, numpy.int32)
@@ -179,7 +208,7 @@ class CalculateBleu(chainer.training.Extension):
     priority = chainer.training.PRIORITY_WRITER
 
     def __init__(
-            self, model, test_data, key, batch=1, device=-1, max_length=50):  # todo change batch size
+            self, model, test_data, key, batch=128, device=-1, max_length=50):  # change batch size
         self.model = model
         self.test_data = test_data
         self.key = key
@@ -251,82 +280,51 @@ def main():
                         help='source sentence list for validation')
     parser.add_argument('--validation-target', default="./dataset/test.jp",
                         help='target sentence list for validation')
-    parser.add_argument('--batchsize', '-b', type=int, default=1,
+    parser.add_argument('--batchsize', '-b', type=int, default=48,
                         help='number of sentence pairs in each mini-batch')
-    parser.add_argument('--epoch', '-e', type=int, default=100,
+    parser.add_argument('--epoch', '-e', type=int, default=200,
                         help='number of sweeps over the dataset to train')
     parser.add_argument('--gpu', '-g', type=int, default=0,
                         help='GPU ID (negative value indicates CPU)')
     parser.add_argument('--resume', '-r', default='',
                         help='resume the training from snapshot')
-    parser.add_argument('--unit', '-u', type=int, default=500,
+    parser.add_argument('--unit', '-u', type=int, default=300,
                         help='number of units')
     parser.add_argument('--layer', '-l', type=int, default=3,
                         help='number of layers')
-    parser.add_argument('--min-source-sentence', type=int, default=0,
+    parser.add_argument('--min-source-sentence', type=int, default=1,
                         help='minimium length of source sentence')
     parser.add_argument('--max-source-sentence', type=int, default=50,
                         help='maximum length of source sentence')
-    parser.add_argument('--min-target-sentence', type=int, default=0,
+    parser.add_argument('--min-target-sentence', type=int, default=1,
                         help='minimium length of target sentence')
     parser.add_argument('--max-target-sentence', type=int, default=50,
                         help='maximum length of target sentence')
-    parser.add_argument('--log-interval', type=int, default=100,
+    parser.add_argument('--log-interval', type=int, default=200,
                         help='number of iteration to show log')
-    parser.add_argument('--validation-interval', type=int, default=256000,
+    parser.add_argument('--validation-interval', type=int, default=4000,
                         help='number of iteration to evlauate the model '
                              'with validation dataset')
     parser.add_argument('--out', '-o', default='result',
                         help='directory to output the result')
+    parser.add_argument('--start', '-s', default=0,
+                        help='start test from this column')
+    parser.add_argument('--model', '-m', default='./result/300-200/snapshot_epoch-200',
+                        help='model name to validate')
+
     args = parser.parse_args()
 
-    source_ids = load_vocabulary(args.SOURCE_VOCAB)
+    source_ids = load_vocabulary(args.SOURCE_VOCAB)  # dict      {a:11, the:3, ...}      word_to_id
     target_ids = load_vocabulary(args.TARGET_VOCAB)
-    train_source = load_data(source_ids, args.SOURCE)
-    train_target = load_data(target_ids, args.TARGET)
-    assert len(train_source) == len(train_target)
-    train_data = [(s, t)
-                  for s, t in six.moves.zip(train_source, train_target)
-                  if args.min_source_sentence <= len(s)
-                  <= args.max_source_sentence and
-                  args.min_source_sentence <= len(t)
-                  <= args.max_source_sentence]
-    train_source_unknown = calculate_unknown_ratio(
-        [s for s, _ in train_data])
-    train_target_unknown = calculate_unknown_ratio(
-        [t for _, t in train_data])
-
-    print('Source vocabulary size: %d' % len(source_ids))
-    print('Target vocabulary size: %d' % len(target_ids))
-    print('Train data size: %d' % len(train_data))
-    print('Train source unknown ratio: %.2f%%' % (train_source_unknown * 100))
-    print('Train target unknown ratio: %.2f%%' % (train_target_unknown * 100))
-
-    target_words = {i: w for w, i in target_ids.items()}
+    target_words = {i: w for w, i in target_ids.items()}  # dict      {11:a, 3:the, ...}      id_to_wod
     source_words = {i: w for w, i in source_ids.items()}
 
-    model = Seq2seq(args.layer, len(source_ids), len(target_ids), args.unit)
+    model = Seq2seq(args.layer, len(source_ids), len(target_ids), args.unit, args.batchsize)
+    serializers.load_npz('./result/300-200/snapshot_epoch-200', model, path='updater/model:main/')
+
     if args.gpu >= 0:
         chainer.cuda.get_device(args.gpu).use()
         model.to_gpu(args.gpu)
-
-    optimizer = chainer.optimizers.Adam()
-    optimizer.setup(model)
-
-    train_iter = chainer.iterators.SerialIterator(train_data, args.batchsize, True, False)  # shuffle=false
-    updater = training.StandardUpdater(
-        train_iter, optimizer, converter=convert, device=args.gpu)
-    trainer = training.Trainer(updater, (args.epoch, 'epoch'), out=args.out)
-    trainer.extend(extensions.LogReport(
-        trigger=(args.log_interval, 'iteration')))
-    trainer.extend(extensions.PrintReport(
-        ['epoch', 'iteration', 'main/loss', 'validation/main/loss',
-         'main/perp', 'validation/main/perp', 'validation/main/bleu',
-         'elapsed_time']),
-        trigger=(args.log_interval, 'iteration'))
-    trainer.extend(
-        extensions.PlotReport(['main/loss', 'validationl/main/loss'], x_key='epoch', file_name='loss.png'))  # to plot
-    trainer.extend(extensions.snapshot(filename='snapshot_epoch-{.updater.epoch}'))
 
     if args.validation_source and args.validation_target:
         test_source = load_data(source_ids, args.validation_source)
@@ -345,30 +343,21 @@ def main():
         print('Validation target unknown ratio: %.2f%%' %
               (test_target_unknown * 100))
 
-        @chainer.training.make_extension()  # per 1 epoch
-        def translate(trainer):
-            source, target = test_data[numpy.random.choice(len(test_data))]
-            result = model.translate([model.xp.array(source)])[0]
-
-            source_sentence = ' '.join([source_words[x] for x in source])
-            target_sentence = ' '.join([target_words[y] for y in target])
-            result_sentence = ' '.join([target_words[y] for y in result])
-            print('# source : ' + source_sentence)
-            print('#  result : ' + result_sentence)
-            print('#  expect : ' + target_sentence)
-
-        trainer.extend(
-            translate, trigger=(args.validation_interval, 'iteration'))
-        trainer.extend(
-            CalculateBleu(
-                model, test_data, 'validation/main/bleu', device=args.gpu),
-            trigger=(args.validation_interval, 'iteration'))
-
-    print('start training')
-    trainer.run()
+        test = test_data[args.start: args.start + args.batchsize]
+        source = [cuda.cupy.asarray(s) for s, _ in test]  # [[sentence1], [sentence2], [sentence3], ...]
+        target = [cuda.cupy.asarray(t) for _, t in test]
+        result = model.translate(source)
+        with open("./translate.txt", "w") as f:
+            for b in range(args.batchsize):
+                source_sentence = ' '.join([source_words[int(x)] for x in source[b]])
+                target_sentence = ' '.join([target_words[int(y)] for y in target[b]])
+                result_sentence = ' '.join([target_words[int(y)] for y in result[b]])
+                f.write('# source[{0}] : {1}{2}'.format(b, source_sentence, '\n'))
+                f.write('# result[{0}] : {1}{2}'.format(b, result_sentence, '\n'))
+                f.write('# expect[{0}] : {1}{2}'.format(b, target_sentence, '\n'))
+                f.write('\n')
+            f.write('\n')
 
 
 if __name__ == '__main__':
     main()
-
-

@@ -1,8 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e2b3fb7b-b541-4066-aa2d-f032958787f3" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    <list default="true" id="e2b3fb7b-b541-4066-aa2d-f032958787f3" name="Default Changelist" comment="complete Roboter">
+      <change afterPath="$PROJECT_DIR$/reserch.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python_prog/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python_prog/database/dbm.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python_prog/database/hbase.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python_prog/database/memcached.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python_prog/database/mongodb.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python_prog/database/mysql.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python_prog/database/pickle.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python_prog/database/sqlalchemy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python_prog/database/sqlite3.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python_prog/logging and optionparser/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python_prog/logging and optionparser/logging.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../python_prog/logging and optionparser/option_parser.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../reservation_manage_system/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../reservation_manage_system/controller/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../reservation_manage_system/controller/manage_reservation_controller.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../reservation_manage_system/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../reservation_manage_system/model/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../reservation_manage_system/model/check.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../reservation_manage_system/model/manage_args.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../reservation_manage_system/model/reservation.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../reservation_manage_system/model/reservation_system_model.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../reservation_manage_system/model/view_all.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/robot_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/robot_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../python_prog/.idea/python_prog.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../python_prog/.idea/python_prog.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../python_prog/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../python_prog/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../python_prog/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../python_prog/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../python_prog/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/../python_prog/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../python_prog/lesson.py" beforeDir="false" afterPath="$PROJECT_DIR$/../python_prog/lesson.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -11,7 +40,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/Roboter$main.coverage" NAME="main Coverage Results" MODIFIED="1542341631466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Roboter$main.coverage" NAME="main Coverage Results" MODIFIED="1542414478382" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FUSProjectUsageTrigger">
     <session id="991500583">
@@ -50,48 +79,50 @@
       <usages-collector id="statistics.vcs.git.usages" />
       <usages-collector id="statistics.js.language.service.starts" />
     </session>
+    <session id="-52635049">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="5" />
+          <entry key="project.open.time.1" value="2" />
+          <entry key="project.open.time.2" value="1" />
+          <entry key="project.open.time.4" value="1" />
+          <entry key="project.open.time.6" value="1" />
+          <entry key="project.opened" value="5" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="py" value="352" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="Python" value="352" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="Python" value="2" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.vcs.git.usages" />
+      <usages-collector id="statistics.js.language.service.starts" />
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="py" value="2" />
+        </counts>
+      </usages-collector>
+    </session>
   </component>
   <component name="FileEditorManager">
     <leaf>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/main.py">
+        <entry file="file://$PROJECT_DIR$/reserch.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="4" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="4" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/contoroller.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" selection-start-line="4" selection-end-line="4" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/robot_model.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="128">
-              <caret line="27" column="11" selection-start-line="27" selection-start-column="11" selection-end-line="27" selection-end-column="11" />
+            <state relative-caret-position="349">
+              <caret line="385" column="32" selection-start-line="385" selection-start-column="32" selection-end-line="385" selection-end-column="32" />
               <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/view.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="12" column="23" selection-start-line="12" selection-start-column="23" selection-end-line="12" selection-end-column="23" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-                <marker date="1542337667626" expanded="true" signature="106:107" ph="..." />
-                <marker date="1542337667626" expanded="true" signature="106:111" ph="..." />
+                <element signature="e#23#38#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -106,6 +137,13 @@
       </list>
     </option>
   </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>test_data</find>
+      <find>BLEU</find>
+      <find>translate</find>
+    </findStrings>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
@@ -119,8 +157,9 @@
         <option value="$PROJECT_DIR$/template/recommend.txt" />
         <option value="$PROJECT_DIR$/template/ask_favorite.txt" />
         <option value="$PROJECT_DIR$/contoroller.py" />
-        <option value="$PROJECT_DIR$/robot_model.py" />
         <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/robot_model.py" />
+        <option value="$PROJECT_DIR$/reserch.py" />
       </list>
     </option>
   </component>
@@ -135,6 +174,89 @@
     <option name="y" value="23" />
     <option name="width" value="640" />
     <option name="height" value="777" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State />
+          <State>
+            <id>Angular</id>
+          </State>
+          <State>
+            <id>Assignment issuesJavaScript</id>
+          </State>
+          <State>
+            <id>Bitwise operation issuesJavaScript</id>
+          </State>
+          <State>
+            <id>Buildout</id>
+          </State>
+          <State>
+            <id>CSS</id>
+          </State>
+          <State>
+            <id>Code style issuesJavaScript</id>
+          </State>
+          <State>
+            <id>Control flow issuesJavaScript</id>
+          </State>
+          <State>
+            <id>DOM issuesJavaScript</id>
+          </State>
+          <State>
+            <id>Django</id>
+          </State>
+          <State>
+            <id>Flow type checkerJavaScript</id>
+          </State>
+          <State>
+            <id>General</id>
+          </State>
+          <State>
+            <id>GeneralJavaScript</id>
+          </State>
+          <State>
+            <id>Invalid elementsCSS</id>
+          </State>
+          <State>
+            <id>JavaScript</id>
+          </State>
+          <State>
+            <id>Potentially confusing code constructsJavaScript</id>
+          </State>
+          <State>
+            <id>Probable bugsJavaScript</id>
+          </State>
+          <State>
+            <id>Properties Files</id>
+          </State>
+          <State>
+            <id>Puppet</id>
+          </State>
+          <State>
+            <id>Python</id>
+          </State>
+          <State>
+            <id>RegExp</id>
+          </State>
+          <State>
+            <id>SQL</id>
+          </State>
+          <State>
+            <id>Spelling</id>
+          </State>
+          <State>
+            <id>TypeScript</id>
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>PyPep8NamingInspection</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="false" id="Update" />
@@ -164,6 +286,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="settings.editor.selected.configurable" value="Errors" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -246,17 +369,17 @@
     <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.29765886" />
+      <window_info content_ui="combo" id="Project" order="1" weight="0.2792642" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Database Changes" order="0" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Terminal" order="1" />
+      <window_info anchor="bottom" id="Terminal" order="1" weight="0.329927" />
       <window_info anchor="bottom" id="Event Log" order="2" sideWeight="0.40468228" side_tool="true" weight="0.329927" />
       <window_info anchor="bottom" id="Version Control" order="3" sideWeight="0.5953177" weight="0.329927" />
       <window_info anchor="bottom" id="Python Console" order="4" weight="0.329927" />
       <window_info anchor="bottom" id="Docker" order="5" show_stripe_button="false" />
       <window_info anchor="bottom" id="Message" order="6" />
       <window_info anchor="bottom" id="Find" order="7" weight="0.329927" />
-      <window_info active="true" anchor="bottom" id="Run" order="8" sideWeight="0.5535117" visible="true" weight="0.329927" />
+      <window_info anchor="bottom" id="Run" order="8" sideWeight="0.5535117" weight="0.329927" />
       <window_info anchor="bottom" id="Debug" order="9" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="10" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="11" weight="0.4" />
@@ -269,10 +392,10 @@
     </layout>
     <layout-to-restore>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.29765886" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.2792642" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Database Changes" order="0" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Terminal" order="1" />
+      <window_info anchor="bottom" id="Terminal" order="1" weight="0.329927" />
       <window_info anchor="bottom" id="Event Log" order="2" sideWeight="0.40468228" side_tool="true" weight="0.329927" />
       <window_info anchor="bottom" id="Version Control" order="3" sideWeight="0.5953177" weight="0.329927" />
       <window_info anchor="bottom" id="Python Console" order="4" weight="0.329927" />
@@ -335,9 +458,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/rnct.csv">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/test/rnct.csv" />
     <entry file="file://$USER_HOME$/Library/Caches/PyCharm2018.2/python_stubs/1995955354/_collections.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
@@ -345,26 +466,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/rnct.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Roboter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="322">
-          <caret line="50" lean-forward="true" selection-end-line="50" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/template/recommned">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/rnct.csv" />
+    <entry file="file://$PROJECT_DIR$/Roboter.py" />
+    <entry file="file://$PROJECT_DIR$/template/recommned" />
     <entry file="file:///anaconda3/lib/python3.7/os.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="220">
@@ -399,6 +503,27 @@
     <entry file="file://$PROJECT_DIR$/rcnt.csv">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="28" selection-start-line="3" selection-start-column="28" selection-end-line="3" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/contoroller.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="24" selection-start-line="7" selection-start-column="24" selection-end-line="7" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/robot_model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="23" selection-start-line="23" selection-end-line="23" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/view.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
@@ -411,27 +536,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/contoroller.py">
+    <entry file="file://$PROJECT_DIR$/reserch.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" selection-start-line="4" selection-end-line="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/robot_model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="128">
-          <caret line="27" column="11" selection-start-line="27" selection-start-column="11" selection-end-line="27" selection-end-column="11" />
+        <state relative-caret-position="349">
+          <caret line="385" column="32" selection-start-line="385" selection-start-column="32" selection-end-line="385" selection-end-column="32" />
           <folding>
-            <element signature="e#0#9#0" expanded="true" />
+            <element signature="e#23#38#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="4" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="4" />
         </state>
       </provider>
     </entry>

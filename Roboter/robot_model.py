@@ -2,6 +2,10 @@ import os
 import csv
 import collections
 import view
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class Robot(object):
@@ -44,7 +48,11 @@ class Robot(object):
             ask_favorite_template.replace("$opponent_name", self.opponent_name)).capitalize()
         self.restaurant_list[answer_restaurant] += 1
         sorted(self.restaurant_list, key=self.restaurant_list.get, reverse=True)
-
+        logger.info({
+            'action': 'save',
+            'csv_file': self.restaurant_list,
+            'status': 'run'
+        })
         with open(self.file_name, "w") as csv_file:
             fieldnames = ["Name", "Count"]
             writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
@@ -53,3 +61,7 @@ class Robot(object):
                 if cnt == 0:
                     continue
                 writer.writerow({"Name": restaurant, "Count": cnt})
+        logger.info({
+            'action': 'save',
+            'status': 'sucess'
+        })

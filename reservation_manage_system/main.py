@@ -1,0 +1,4 @@
+from controller.manage_reservation_controller import manage_reservation_system
+
+
+manage_reservation_system()
